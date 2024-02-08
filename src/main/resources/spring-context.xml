@@ -12,5 +12,11 @@
         </constructor-arg>
     </bean>
 
+    <bean id="testService" class="ru.otus.hw.service.TestServiceImpl">
+        <constructor-arg name="ioService" ref="ioService" />
+    </bean>
 
+    <bean id="testServiceImpl" class="ru.otus.hw.service.TestRunnerServiceImpl">
+        <constructor-arg name="testService" ref="testService" />
+    </bean>
 </beans>
