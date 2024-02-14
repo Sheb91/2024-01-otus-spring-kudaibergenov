@@ -7,9 +7,11 @@ import ru.otus.hw.dao.dto.QuestionDto;
 import ru.otus.hw.domain.Question;
 import ru.otus.hw.exceptions.QuestionReadException;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -28,19 +30,22 @@ public class CsvQuestionDao implements QuestionDao {
         // https://opencsv.sourceforge.net/#collection_based_bean_fields_one_to_many_mappings
         // Использовать QuestionReadException
         // Про ресурсы: https://mkyong.com/java/java-read-a-file-from-resources-folder/
-
-        InputStream is = CsvQuestionDao.class.getClassLoader().getResourceAsStream(fileNameProvider.getTestFileName());
-        List<QuestionDto> questionDtoList = new CsvToBeanBuilder(new InputStreamReader(is))
-                .withType(QuestionDto.class)
-                .withSeparator(SEPARATOR_QUESTION_MARK)
-                .withSeparator(SEPARATOR_SEMICOLON)
-                .withSkipLines(SKIP_LINES)
-                .build()
-                .parse();
-
-        return questionDtoList
-                .stream()
-                .map(e -> e.toDomainObject())
-                .collect(Collectors.toList());
+        try (InputStream is =
+                     CsvQuestionDao.class.getClassLoader().getResourceAsStream(fileNameProvider.getTestFileName())) {
+            Objects.requireNonNull(is);
+            List<QuestionDto> questionDtoList = new CsvToBeanBuilder(new InputStreamReader(is))
+                    .withType(QuestionDto.class)
+                    .withSeparator(SEPARATOR_QUESTION_MARK)
+                    .withSeparator(SEPARATOR_SEMICOLON)
+                    .withSkipLines(SKIP_LINES)
+                    .build()
+                    .parse();
+            return questionDtoList
+                    .stream()
+                    .map(e -> e.toDomainObject())
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
