@@ -23,6 +23,17 @@ public class TestServiceImpl implements TestService {
 
         for (var question: questions) {
             var isAnswerValid = false; // Задать вопрос, получить ответ
+            ioService.printFormattedLine("Question: %s", question.text());
+            int rightAnswerIndex = -1;
+            for (int i = 0; i < question.answers().size(); i++) {
+                ioService.printFormattedLine("Answer %s: %s", i + 1, question.answers().get(i).text());
+                if (question.answers().get(i).isCorrect()) {
+                    rightAnswerIndex = i + 1;
+                }
+            }
+            int chosenAnswerToQuestion = ioService.readIntForRange(1, question.answers().size(),
+                    "Такого варианта ответа не существует.");
+            isAnswerValid = (rightAnswerIndex == chosenAnswerToQuestion) ? true : false;
             testResult.applyAnswer(question, isAnswerValid);
         }
         return testResult;
