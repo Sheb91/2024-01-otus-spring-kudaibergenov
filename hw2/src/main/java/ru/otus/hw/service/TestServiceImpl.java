@@ -3,6 +3,7 @@ package ru.otus.hw.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.otus.hw.dao.QuestionDao;
+import ru.otus.hw.domain.Question;
 import ru.otus.hw.domain.Student;
 import ru.otus.hw.domain.TestResult;
 
@@ -14,6 +15,21 @@ public class TestServiceImpl implements TestService {
 
     private final QuestionDao questionDao;
 
+    private boolean isCorrectAnswer(Question question) {
+        ioService.printFormattedLine("Question: %s", question.text());
+        int rightAnswerIndex = -1;
+        for (int i = 0; i < question.answers().size(); i++) {
+            ioService.printFormattedLine("Answer %s: %s", i + 1, question.answers().get(i).text());
+            if (question.answers().get(i).isCorrect()) {
+                rightAnswerIndex = i + 1;
+            }
+        }
+        int chosenAnswerToQuestion = ioService.readIntForRangeWithPrompt(1, question.answers().size(),
+                "Your answer is: ",
+                "Error! No such option !");
+        return rightAnswerIndex == chosenAnswerToQuestion;
+    }
+
     @Override
     public TestResult executeTestFor(Student student) {
         ioService.printLine("");
@@ -21,19 +37,8 @@ public class TestServiceImpl implements TestService {
         var questions = questionDao.findAll();
         var testResult = new TestResult(student);
 
-        for (var question: questions) {
-            var isAnswerValid = false; // Задать вопрос, получить ответ
-            ioService.printFormattedLine("Question: %s", question.text());
-            int rightAnswerIndex = -1;
-            for (int i = 0; i < question.answers().size(); i++) {
-                ioService.printFormattedLine("Answer %s: %s", i + 1, question.answers().get(i).text());
-                if (question.answers().get(i).isCorrect()) {
-                    rightAnswerIndex = i + 1;
-                }
-            }
-            int chosenAnswerToQuestion = ioService.readIntForRange(1, question.answers().size(),
-                    "Такого варианта ответа не существует.");
-            isAnswerValid = (rightAnswerIndex == chosenAnswerToQuestion) ? true : false;
+        for (var question : questions) {
+            var isAnswerValid = isCorrectAnswer(question); // Задать вопрос, получить ответ
             testResult.applyAnswer(question, isAnswerValid);
         }
         return testResult;
