@@ -27,9 +27,9 @@ public class CsvQuestionDao implements QuestionDao {
 
     @Override
     public List<Question> findAll() {
-        try (InputStream is =
-                     CsvQuestionDao.class.getClassLoader().getResourceAsStream(fileNameProvider.getTestFileName())) {
-            Objects.requireNonNull(is);
+        try (InputStream is = Objects.requireNonNull(
+                CsvQuestionDao.class.getClassLoader().getResourceAsStream(fileNameProvider.getTestFileName()))
+        ) {
             List<QuestionDto> questionDtoList = new CsvToBeanBuilder(new InputStreamReader(is))
                     .withType(QuestionDto.class)
                     .withSeparator(SEPARATOR_QUESTION_MARK)
