@@ -25,35 +25,42 @@ class TestServiceImplTest {
     AppProperties appProperties;
 
     @Mock
-    IOService ioService;
+    IOService mockIoService;
 
     @Mock
+    QuestionDao mockQuestionDao;
+
     QuestionDao questionDao;
 
     TestService testService;
 
     @BeforeEach
     void setUp() {
-        testService = new TestServiceImpl(ioService, questionDao);
+        appProperties = new AppProperties();
+        appProperties.setTestFileName("questions.csv");
+        questionDao = new CsvQuestionDao(appProperties);
+
+        testService = new TestServiceImpl(mockIoService, mockQuestionDao);
     }
 
 
     @Test
     void shouldLoadSomeDataFromFile() {
-        appProperties = new AppProperties();
-        appProperties.setTestFileName("questions.csv");
-        questionDao = new CsvQuestionDao(appProperties);
-        List<Question> questionList = questionDao.findAll();
-        assertTrue(questionList.size() > 0);
+        assertTrue(questionDao.findAll().size() > 0);
+    }
+
+    @Test
+    void shouldHaveFiveQuestionsInResourceFile() {
+        assertEquals(5, questionDao.findAll().size());
     }
 
     @Test
     void shouldHaveCorrectAnswer() {
-        given(questionDao.findAll())
+        given(mockQuestionDao.findAll())
                 .willReturn(List.of(new Question("How much is 10+10=?",
                         List.of(new Answer("20", true), new Answer("30", false)))));
 
-        given(ioService.readIntForRangeWithPrompt(any(Integer.class), any(Integer.class), any(String.class), any(String.class)))
+        given(mockIoService.readIntForRangeWithPrompt(any(Integer.class), any(Integer.class), any(String.class), any(String.class)))
                 .willReturn(1);
 
         TestResult testResult = testService.executeTestFor(new Student("John", "Doe"));
