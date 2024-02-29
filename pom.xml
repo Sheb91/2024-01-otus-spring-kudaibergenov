@@ -7,6 +7,7 @@
   <packaging>pom</packaging>
   <version>1.0</version>
   <modules>
+    <module>hw1</module>
     <module>hw2</module>
   </modules>
 </project>
