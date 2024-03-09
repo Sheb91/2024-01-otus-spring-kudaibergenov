@@ -3,15 +3,13 @@ package ru.otus.hw.config;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.Locale;
 import java.util.Map;
 
-@Configuration
 @ConfigurationProperties(prefix = "test")
 @Setter
-public class AppProperties implements TestConfig, TestFileNameProvider, LocaleConfig {
+public class AppProperties implements TestConfig, TestFileNameProvider, LocaleProvider {
 
     @Getter
     private int rightAnswersCountToPass;
