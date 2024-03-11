@@ -9,5 +9,6 @@
   <modules>
     <module>hw1</module>
     <module>hw2</module>
+    <module>hw4</module>
   </modules>
 </project>
