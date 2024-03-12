@@ -1,20 +1,26 @@
 package ru.otus.hw.security;
 
 import org.springframework.stereotype.Component;
+import ru.otus.hw.domain.Student;
 
 import static java.util.Objects.nonNull;
 
 @Component
 public class InMemoryLoginContext implements LoginContext {
-    private String userName;
+    private Student student;
 
     @Override
-    public void login(String userName) {
-        this.userName = userName;
+    public void login(Student student) {
+        this.student = student;
     }
 
     @Override
-    public boolean isUserLoggedIn() {
-        return nonNull(userName);
+    public Student getStudent() {
+        return student;
+    }
+
+    @Override
+    public boolean studentHasLastNameAndFirstName() {
+        return nonNull(student) && nonNull(student.lastName()) && nonNull(student.firstName());
     }
 }
