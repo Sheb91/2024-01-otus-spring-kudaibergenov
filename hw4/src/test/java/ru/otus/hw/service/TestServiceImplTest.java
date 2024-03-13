@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.hw.dao.QuestionDao;
 import ru.otus.hw.domain.Answer;
 import ru.otus.hw.domain.Question;
@@ -17,20 +20,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest(classes = TestServiceImpl.class)
 class TestServiceImplTest {
-    @Mock
+    @MockBean
     LocalizedIOService mockIoService;
 
-    @Mock
+    @MockBean
     QuestionDao mockQuestionDao;
 
+    @Autowired
     TestService testService;
 
-    @BeforeEach
-    void setUp() {
-        testService = new TestServiceImpl(mockIoService, mockQuestionDao);
-    }
 
     @Test
     void shouldHaveCorrectAnswer() {
