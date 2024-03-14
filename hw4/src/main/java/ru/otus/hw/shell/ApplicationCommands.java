@@ -5,8 +5,6 @@ import org.springframework.shell.Availability;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellMethodAvailability;
-import org.springframework.shell.standard.ShellOption;
-import ru.otus.hw.domain.Student;
 import ru.otus.hw.security.LoginContext;
 import ru.otus.hw.service.StudentService;
 import ru.otus.hw.service.TestRunnerService;
@@ -14,8 +12,11 @@ import ru.otus.hw.service.TestRunnerService;
 @ShellComponent
 @RequiredArgsConstructor
 public class ApplicationCommands {
+
     private final LoginContext loginContext;
+
     private final TestRunnerService testRunnerService;
+
     private final StudentService studentService;
 
     @ShellMethod(value = "Login command", key = {"l", "login"})
