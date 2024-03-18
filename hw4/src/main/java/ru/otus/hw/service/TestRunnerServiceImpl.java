@@ -7,7 +7,7 @@ import ru.otus.hw.domain.Student;
 
 @Service
 @RequiredArgsConstructor
-public class TestRunnerServiceImpl implements TestRunnerService, CommandLineRunner {
+public class TestRunnerServiceImpl implements TestRunnerService {
 
     private final TestService testService;
 
@@ -19,10 +19,5 @@ public class TestRunnerServiceImpl implements TestRunnerService, CommandLineRunn
     public void run(Student student) {
         var testResult = testService.executeTestFor(student);
         resultService.showResult(testResult);
-    }
-
-    @Override
-    public void run(String... args) {
-        run();
     }
 }
