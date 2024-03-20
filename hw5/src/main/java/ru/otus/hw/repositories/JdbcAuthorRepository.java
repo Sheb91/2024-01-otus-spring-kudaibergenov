@@ -1,7 +1,6 @@
 package ru.otus.hw.repositories;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
@@ -30,16 +29,12 @@ public class JdbcAuthorRepository implements AuthorRepository {
     @Override
     public Optional<Author> findById(long id) {
         Map<String, Object> params = Collections.singletonMap("id", id);
-        try {
-            return Optional.ofNullable(namedParameterJdbcOperations.queryForObject(
-                    "select id, full_name from authors where id = :id",
-                    params,
-                    new AuthorRowMapper()
-            ));
-        }
-        catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
+        List<Author> authorList = namedParameterJdbcOperations.query(
+                "select id, full_name from authors where id = :id",
+                params,
+                new AuthorRowMapper()
+        );
+        return authorList.isEmpty() ? Optional.empty() : Optional.ofNullable(authorList.get(0));
     }
 
     private static class AuthorRowMapper implements RowMapper<Author> {
