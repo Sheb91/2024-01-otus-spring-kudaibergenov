@@ -76,7 +76,7 @@ class JdbcBookRepositoryTest {
     @DisplayName("должен сохранять измененную книгу")
     @Test
     void shouldSaveUpdatedBook() {
-        var expectedBook = new Book(1L, "BookTitle_10500", dbAuthors.get(2), dbGenres.get(2));
+        var expectedBook = new Book(3L, "BookTitle_10500", dbAuthors.get(2), dbGenres.get(2));
 
         assertThat(repositoryJdbc.findById(expectedBook.getId()))
                 .isPresent()
