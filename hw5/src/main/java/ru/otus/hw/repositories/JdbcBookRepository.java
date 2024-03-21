@@ -1,7 +1,6 @@
 package ru.otus.hw.repositories;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
@@ -27,18 +26,15 @@ public class JdbcBookRepository implements BookRepository {
     @Override
     public Optional<Book> findById(long id) {
         Map<String, Object> params = Collections.singletonMap("book_id", id);
-        try {
-            return Optional.of(namedParameterJdbcOperations.queryForObject(
-                    "select b.id, b.title, b.author_id, a.full_name, b.genre_id, g.name from books b" +
-                            " join authors a on a.id = b.author_id" +
-                            " join genres g on g.id = b.genre_id" +
-                            " where b.id = :book_id",
-                    params,
-                    new BookRowMapper()
-            ));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
+        List<Book> bookList = namedParameterJdbcOperations.query(
+                "select b.id, b.title, b.author_id, a.full_name, b.genre_id, g.name from books b" +
+                        " join authors a on a.id = b.author_id" +
+                        " join genres g on g.id = b.genre_id" +
+                        " where b.id = :book_id",
+                params,
+                new BookRowMapper()
+        );
+        return bookList.isEmpty() ? Optional.empty() : Optional.of(bookList.get(0));
     }
 
     @Override
