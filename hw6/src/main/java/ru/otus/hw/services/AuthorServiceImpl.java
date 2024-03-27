@@ -27,20 +27,25 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        authorRepository.deleteById(id);
+        findById(id).ifPresent(author -> authorRepository.delete(author));
     }
 
     @Override
     @Transactional
     public void updateNameById(Long id, String name) {
         if (name != null) {
-            authorRepository.updateNameById(id, name);
+            findById(id).ifPresent(author -> {
+                author.setName(name);
+                authorRepository.update(author);
+            });
         }
     }
 
     @Override
     @Transactional
     public void save(String name) {
-        authorRepository.save(name);
+        Author author = new Author();
+        author.setName(name);
+        authorRepository.save(author);
     }
 }

@@ -6,15 +6,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AuthorRepository {
-    Author save(Author author);
+    void save(Author author);
 
     Optional<Author> findById(Long id);
 
     List<Author> findAll();
 
-    void updateNameById(Long id, String name);
+    void update(Author author);
 
-    void deleteById(Long id);
-
-    void save(String name);
+    void delete(Author author);
 }

@@ -15,8 +15,8 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     private EntityManager em;
 
     @Override
-    public Author save(Author author) {
-        return null;
+    public void save(Author author) {
+        em.persist(author);
     }
 
     @Override
@@ -30,22 +30,12 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     }
 
     @Override
-    public void updateNameById(Long id, String name) {
-        findById(id).ifPresent(author -> {
-            author.setName(name);
-            em.merge(author);
-        });
+    public void update(Author author) {
+        em.merge(author);
     }
 
     @Override
-    public void deleteById(Long id) {
-        findById(id).ifPresent(author -> em.remove(author));
-    }
-
-    @Override
-    public void save(String name) {
-        Author author = new Author();
-        author.setName(name);
-        em.persist(author);
+    public void delete(Author author) {
+        em.remove(author);
     }
 }
