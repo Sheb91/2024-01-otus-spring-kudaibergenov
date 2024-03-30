@@ -16,4 +16,11 @@ create table if not exists books(
     author_id bigint references authors(id),
     genre_id bigint references genres(id),
     primary key (id)
-)
+);
+
+create table if not exists comments(
+    id bigserial,
+    description varchar(255),
+    book_id bigint references books(id),
+    primary key (id)
+);
