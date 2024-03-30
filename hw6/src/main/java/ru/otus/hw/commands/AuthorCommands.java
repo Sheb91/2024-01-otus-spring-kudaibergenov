@@ -38,7 +38,7 @@ public class AuthorCommands {
         authorService.updateNameById(id, name);
     }
 
-    @ShellMethod(value = "Update author name by id", key = "ains")
+    @ShellMethod(value = "Insert new author", key = "ains")
     public void insertNewAuthor(String name) {
         authorService.save(name);
     }

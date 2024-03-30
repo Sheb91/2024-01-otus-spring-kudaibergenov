@@ -1,0 +1,39 @@
+package ru.otus.hw.models;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.NamedAttributeNode;
+
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+import lombok.Data;
+
+@Data
+@NamedEntityGraph(name = "book-entity-graph", attributeNodes = {
+        @NamedAttributeNode("author"),
+        @NamedAttributeNode("genre")
+})
+@Entity
+@Table(name = "books")
+public class Book {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "name", nullable = false, unique = true)
+    private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private Author author;
+
+    @ManyToOne
+    @JoinColumn(name = "genre_id")
+    private Genre genre;
+}
