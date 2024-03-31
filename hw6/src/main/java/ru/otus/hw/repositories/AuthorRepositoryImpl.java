@@ -15,8 +15,9 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     private EntityManager em;
 
     @Override
-    public void save(Author author) {
+    public Author save(Author author) {
         em.persist(author);
+        return author;
     }
 
     @Override
