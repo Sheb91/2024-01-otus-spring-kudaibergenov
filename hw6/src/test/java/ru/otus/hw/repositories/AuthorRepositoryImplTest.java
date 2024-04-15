@@ -67,7 +67,7 @@ public class AuthorRepositoryImplTest {
         val firstAuthor = testEntityManager.find(Author.class, FIRST_AUTHOR_ID);
         assertThat(firstAuthor).isNotNull();
 
-        authorRepositoryImpl.delete(firstAuthor);
+        authorRepositoryImpl.delete(FIRST_AUTHOR_ID);
         val deletedAuthor = testEntityManager.find(Author.class, FIRST_AUTHOR_ID);
         assertThat(deletedAuthor).isNull();
     }

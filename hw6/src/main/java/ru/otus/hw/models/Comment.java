@@ -1,8 +1,6 @@
 package ru.otus.hw.models;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.NamedEntityGraph;
-import jakarta.persistence.NamedAttributeNode;
 
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
@@ -11,6 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.FetchType;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,9 +19,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@NamedEntityGraph(name = "comment-entity-graph", attributeNodes = {
-        @NamedAttributeNode("book")
-})
 @Entity
 @Table(name = "comments")
 public class Comment {
@@ -29,7 +26,7 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
 

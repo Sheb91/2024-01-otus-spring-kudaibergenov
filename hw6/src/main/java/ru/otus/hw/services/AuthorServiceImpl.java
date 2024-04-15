@@ -3,6 +3,7 @@ package ru.otus.hw.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Author;
 import ru.otus.hw.repositories.AuthorRepository;
 
@@ -27,17 +28,18 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        findById(id).ifPresent(author -> authorRepository.delete(author));
+        authorRepository.delete(id);
     }
 
     @Override
     @Transactional
     public void updateNameById(Long id, String name) {
         if (name != null) {
-            findById(id).ifPresent(author -> {
-                author.setName(name);
-                authorRepository.update(author);
+            Author author = findById(id).orElseThrow(() -> {
+                throw new EntityNotFoundException("Cannot update author with id %d. Not found.".formatted(id));
             });
+            author.setName(name);
+            authorRepository.update(author);
         }
     }
 

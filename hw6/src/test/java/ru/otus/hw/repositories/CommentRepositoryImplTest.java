@@ -72,7 +72,7 @@ public class CommentRepositoryImplTest {
         val firstComment = testEntityManager.find(Comment.class, FIRST_COMMENT_ID);
         assertThat(firstComment).isNotNull();
 
-        commentRepositoryImpl.delete(firstComment);
+        commentRepositoryImpl.delete(FIRST_COMMENT_ID);
         val deletedComment = testEntityManager.find(Comment.class, FIRST_COMMENT_ID);
         assertThat(deletedComment).isNull();
     }

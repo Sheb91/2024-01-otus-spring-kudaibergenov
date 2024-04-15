@@ -3,6 +3,7 @@ package ru.otus.hw.repositories;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
+import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Author;
 
 import java.util.List;
@@ -36,7 +37,13 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     }
 
     @Override
-    public void delete(Author author) {
-        em.remove(author);
+    public void delete(Long id) {
+        findById(id)
+            .ifPresentOrElse(
+                    author -> em.remove(author),
+                    () -> {
+                        throw new EntityNotFoundException("Cannot delete author with id %d. Not found.".formatted(id));
+                    }
+            );
     }
 }

@@ -33,16 +33,17 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        findById(id).ifPresent(book -> bookRepository.delete(book));
+        bookRepository.delete(id);
     }
 
     @Override
     @Transactional
     public void update(Long id, String name) {
-        findById(id).ifPresent(book -> {
-            book.setName(name);
-            bookRepository.update(book);
+        Book book = findById(id).orElseThrow(() -> {
+            throw new EntityNotFoundException("Cannot update book with id %d. Not found.".formatted(id));
         });
+        book.setName(name);
+        bookRepository.update(book);
     }
 
     @Override

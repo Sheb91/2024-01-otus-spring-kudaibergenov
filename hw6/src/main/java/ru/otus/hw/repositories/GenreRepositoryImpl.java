@@ -3,6 +3,7 @@ package ru.otus.hw.repositories;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
+import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Genre;
 
 import java.util.List;
@@ -35,7 +36,12 @@ public class GenreRepositoryImpl implements GenreRepository {
     }
 
     @Override
-    public void delete(Genre genre) {
-        em.remove(genre);
+    public void delete(Long id) {
+        findById(id)
+            .ifPresentOrElse(
+                genre -> em.remove(genre),
+                () -> {
+                    throw new EntityNotFoundException("Cannot find genre with id %d. Not found".formatted(id));
+                });
     }
 }

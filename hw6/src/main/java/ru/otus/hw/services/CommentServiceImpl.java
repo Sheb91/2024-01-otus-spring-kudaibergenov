@@ -24,26 +24,29 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public List<Comment> findAll(Long bookId) {
         var book = bookRepository.
                 findById(bookId)
-                .orElseThrow(() -> new EntityNotFoundException("Book with id %d is not found".formatted(bookId)));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Comments for book with id %d is not found".formatted(bookId)));
         return commentRepository.findAll(book);
     }
 
     @Override
     @Transactional
     public void deleteById(Long id) {
-        findById(id).ifPresent(comment -> commentRepository.delete(comment));
+        commentRepository.delete(id);
     }
 
     @Override
     @Transactional
     public void update(Long id, String description) {
-        findById(id).ifPresent(comment -> {
-            comment.setDescription(description);
-            commentRepository.update(comment);
+        Comment comment = findById(id).orElseThrow(() -> {
+            throw new EntityNotFoundException("Cannot update comment with id %d. Not found.".formatted(id));
         });
+        comment.setDescription(description);
+        commentRepository.update(comment);
     }
 
     @Override

@@ -73,7 +73,7 @@ public class BookRepositoryImplTest {
         val firstBook = testEntityManager.find(Book.class, FIRST_BOOK_ID);
         assertThat(firstBook).isNotNull();
 
-        bookRepositoryImpl.delete(firstBook);
+        bookRepositoryImpl.delete(FIRST_BOOK_ID);
         val deletedBook = testEntityManager.find(Book.class, FIRST_BOOK_ID);
         assertThat(deletedBook).isNull();
     }

@@ -3,6 +3,7 @@ package ru.otus.hw.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Genre;
 import ru.otus.hw.repositories.GenreRepository;
 
@@ -28,17 +29,18 @@ public class GenreServiceImpl implements GenreService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        findById(id).ifPresent(genre -> genreRepository.delete(genre));
+        genreRepository.delete(id);
     }
 
     @Override
     @Transactional
     public void updateNameById(Long id, String name) {
         if (name != null) {
-            findById(id).ifPresent(genre -> {
-                genre.setName(name);
-                genreRepository.update(genre);
+            Genre genre = findById(id).orElseThrow(() -> {
+                throw new EntityNotFoundException("Cannot find genre with id %d. Not found".formatted(id));
             });
+            genre.setName(name);
+            genreRepository.update(genre);
         }
     }
 
