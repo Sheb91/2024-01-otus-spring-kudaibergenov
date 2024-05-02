@@ -43,7 +43,8 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public void delete(Long id) {
-        findById(id)
+        Optional<Comment> optionalComment = Optional.ofNullable(em.find(Comment.class, id));
+        optionalComment
             .ifPresentOrElse(
                     comment -> em.remove(comment),
                     () -> {

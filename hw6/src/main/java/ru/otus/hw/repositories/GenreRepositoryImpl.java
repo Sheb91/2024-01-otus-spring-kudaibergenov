@@ -37,7 +37,8 @@ public class GenreRepositoryImpl implements GenreRepository {
 
     @Override
     public void delete(Long id) {
-        findById(id)
+        Optional<Genre> optionalGenre = Optional.ofNullable(em.find(Genre.class, id));
+        optionalGenre
             .ifPresentOrElse(
                 genre -> em.remove(genre),
                 () -> {

@@ -38,7 +38,8 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
     @Override
     public void delete(Long id) {
-        findById(id)
+        Optional<Author> optionalAuthor = Optional.ofNullable(em.find(Author.class, id));
+        optionalAuthor
             .ifPresentOrElse(
                     author -> em.remove(author),
                     () -> {
