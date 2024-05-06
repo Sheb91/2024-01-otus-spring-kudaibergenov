@@ -43,13 +43,11 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public void delete(Long id) {
-        Optional<Comment> optionalComment = Optional.ofNullable(em.find(Comment.class, id));
-        optionalComment
-            .ifPresentOrElse(
-                    comment -> em.remove(comment),
-                    () -> {
-                        throw new EntityNotFoundException("Cannot delete comment with id %d. Not found.".formatted(id));
-                    }
-            );
+        Comment comment = em.find(Comment.class, id);
+        if (comment != null) {
+            em.remove(comment);
+        } else {
+            throw new EntityNotFoundException("Cannot delete comment with id %d. Not found.".formatted(id));
+        }
     }
 }

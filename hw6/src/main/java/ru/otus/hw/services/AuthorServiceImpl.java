@@ -34,13 +34,11 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     @Transactional
     public void updateNameById(Long id, String name) {
-        if (name != null) {
-            Author author = findById(id).orElseThrow(() -> {
-                throw new EntityNotFoundException("Cannot update author with id %d. Not found.".formatted(id));
-            });
-            author.setName(name);
-            authorRepository.update(author);
-        }
+        Author author = findById(id).orElseThrow(() -> {
+            throw new EntityNotFoundException("Cannot update author with id %d. Not found.".formatted(id));
+        });
+        author.setName(name);
+        authorRepository.update(author);
     }
 
     @Override

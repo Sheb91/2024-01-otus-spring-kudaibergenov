@@ -37,12 +37,11 @@ public class GenreRepositoryImpl implements GenreRepository {
 
     @Override
     public void delete(Long id) {
-        Optional<Genre> optionalGenre = Optional.ofNullable(em.find(Genre.class, id));
-        optionalGenre
-            .ifPresentOrElse(
-                genre -> em.remove(genre),
-                () -> {
-                    throw new EntityNotFoundException("Cannot find genre with id %d. Not found".formatted(id));
-                });
+        Genre genre = em.find(Genre.class, id);
+        if (genre != null) {
+            em.remove(genre);
+        } else {
+            throw new EntityNotFoundException("Cannot find genre with id %d. Not found".formatted(id));
+        }
     }
 }

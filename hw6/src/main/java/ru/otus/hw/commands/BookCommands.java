@@ -3,6 +3,7 @@ package ru.otus.hw.commands;
 import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
+import org.springframework.shell.standard.ShellOption;
 import ru.otus.hw.models.Book;
 import ru.otus.hw.services.BookService;
 
@@ -34,8 +35,11 @@ public class BookCommands {
     }
 
     @ShellMethod(value = "Update book name by id", key = "bupd")
-    public void updateBookNameById(Long id, String name) {
-        bookService.update(id, name);
+    public void updateBookNameById(Long id,
+                                   String name,
+                                   @ShellOption(defaultValue = "0") Long authorId,
+                                   @ShellOption(defaultValue = "0") Long genreId) {
+        bookService.update(id, name, authorId, genreId);
     }
 
     @ShellMethod(value = "Insert new Book", key = "bins")

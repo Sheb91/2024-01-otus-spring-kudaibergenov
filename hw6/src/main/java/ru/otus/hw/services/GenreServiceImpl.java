@@ -35,13 +35,11 @@ public class GenreServiceImpl implements GenreService {
     @Override
     @Transactional
     public void updateNameById(Long id, String name) {
-        if (name != null) {
-            Genre genre = findById(id).orElseThrow(() -> {
-                throw new EntityNotFoundException("Cannot find genre with id %d. Not found".formatted(id));
-            });
-            genre.setName(name);
-            genreRepository.update(genre);
-        }
+        Genre genre = findById(id).orElseThrow(() -> {
+            throw new EntityNotFoundException("Cannot find genre with id %d. Not found".formatted(id));
+        });
+        genre.setName(name);
+        genreRepository.update(genre);
     }
 
     @Override

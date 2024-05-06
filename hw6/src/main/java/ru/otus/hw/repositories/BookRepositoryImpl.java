@@ -8,7 +8,9 @@ import org.springframework.stereotype.Repository;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Book;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.springframework.data.jpa.repository.EntityGraph.EntityGraphType.FETCH;
@@ -25,15 +27,14 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public Optional<Book> findById(Long id) {
-        return findOptionalBookById(id);
+        return Optional.ofNullable(findBookById(id));
     }
 
-    private Optional<Book> findOptionalBookById(Long id) {
+    private Book findBookById(Long id) {
         EntityGraph<?> entityGraph = em.getEntityGraph("book-entity-graph");
-        TypedQuery<Book> query = em.createQuery("select b from Book b where b.id = :id", Book.class);
-        query.setParameter("id", id)
-                .setHint(FETCH.getKey(), entityGraph);
-        return query.getResultList().stream().findFirst();
+        Map<String, Object> hintsMap = new HashMap<>();
+        hintsMap.put(FETCH.getKey(), entityGraph);
+        return em.find(Book.class, id, hintsMap);
     }
 
     @Override
@@ -51,12 +52,11 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public void delete(Long id) {
-        findOptionalBookById(id)
-            .ifPresentOrElse(
-                    book -> em.remove(book),
-                    () -> {
-                        throw new EntityNotFoundException("Cannot delete book with id %d. Not found.".formatted(id));
-                    }
-            );
+        Book book = findBookById(id);
+        if (book != null) {
+            em.remove(book);
+        } else {
+            throw new EntityNotFoundException("Cannot delete book with id %d. Not found.".formatted(id));
+        }
     }
 }
