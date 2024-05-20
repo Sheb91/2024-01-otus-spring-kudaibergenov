@@ -1,19 +1,18 @@
 package ru.otus.hw.repositories;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.otus.hw.models.Book;
 import ru.otus.hw.models.Comment;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface CommentRepository {
-    Comment save(Comment comment);
+public interface CommentRepository extends JpaRepository<Comment, Long> {
+    List<Comment> findAllByBook(Book book);
 
-    Optional<Comment> findById(Long id);
-
-    List<Comment> findAll(Book book);
-
-    void update(Comment comment);
-
-    void delete(Long id);
+    @Modifying
+    @Query("UPDATE Comment c SET c.description = :description WHERE c.id = :id")
+    void updateDescriptionById(@Param("id") Long id, @Param("description") String description);
 }

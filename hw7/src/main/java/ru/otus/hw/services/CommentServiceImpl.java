@@ -27,13 +27,13 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     public List<Comment> findAll(Long bookId) {
         var book = bookRepository.findById(bookId).get();
-        return commentRepository.findAll(book);
+        return commentRepository.findAllByBook(book);
     }
 
     @Override
     @Transactional
     public void deleteById(Long id) {
-        commentRepository.delete(id);
+        commentRepository.deleteById(id);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class CommentServiceImpl implements CommentService {
             throw new EntityNotFoundException("Cannot update comment with id %d. Not found.".formatted(id));
         });
         comment.setDescription(description);
-        commentRepository.update(comment);
+        commentRepository.updateDescriptionById(id, description);
     }
 
     @Override

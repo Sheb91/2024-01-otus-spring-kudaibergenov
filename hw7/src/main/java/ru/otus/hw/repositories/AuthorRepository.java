@@ -1,18 +1,13 @@
 package ru.otus.hw.repositories;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.otus.hw.models.Author;
 
-import java.util.List;
-import java.util.Optional;
-
-public interface AuthorRepository {
-    Author save(Author author);
-
-    Optional<Author> findById(Long id);
-
-    List<Author> findAll();
-
-    void update(Author author);
-
-    void delete(Long id);
+public interface AuthorRepository extends JpaRepository<Author, Long> {
+    @Modifying
+    @Query("UPDATE Author a SET a.name = :name WHERE a.id = :id")
+    void updateNameById(@Param("id") Long id, @Param("name") String name);
 }

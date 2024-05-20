@@ -29,17 +29,16 @@ public class GenreServiceImpl implements GenreService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        genreRepository.delete(id);
+        genreRepository.deleteById(id);
     }
 
     @Override
     @Transactional
     public void updateNameById(Long id, String name) {
-        Genre genre = findById(id).orElseThrow(() -> {
+        findById(id).orElseThrow(() -> {
             throw new EntityNotFoundException("Cannot find genre with id %d. Not found".formatted(id));
         });
-        genre.setName(name);
-        genreRepository.update(genre);
+        genreRepository.updateNameById(id, name);
     }
 
     @Override

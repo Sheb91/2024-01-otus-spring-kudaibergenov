@@ -35,7 +35,7 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        bookRepository.delete(id);
+        bookRepository.deleteById(id);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class BookServiceImpl implements BookService {
             book.setGenre(genre);
         }
 
-        bookRepository.update(book);
+        bookRepository.save(book);
     }
 
     @Override

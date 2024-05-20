@@ -28,17 +28,16 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        authorRepository.delete(id);
+        authorRepository.deleteById(id);
     }
 
     @Override
     @Transactional
     public void updateNameById(Long id, String name) {
-        Author author = findById(id).orElseThrow(() -> {
+        findById(id).orElseThrow(() -> {
             throw new EntityNotFoundException("Cannot update author with id %d. Not found.".formatted(id));
         });
-        author.setName(name);
-        authorRepository.update(author);
+        authorRepository.updateNameById(id, name);
     }
 
     @Override
