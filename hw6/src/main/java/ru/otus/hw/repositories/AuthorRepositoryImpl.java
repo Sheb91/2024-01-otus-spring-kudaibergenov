@@ -39,10 +39,6 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     @Override
     public void delete(Long id) {
         Author author = em.find(Author.class, id);
-        if (author != null) {
-            em.remove(author);
-        } else {
-            throw new EntityNotFoundException("Cannot delete author with id %d. Not found.".formatted(id));
-        }
+        em.remove(author);
     }
 }

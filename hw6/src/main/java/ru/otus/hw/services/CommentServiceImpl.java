@@ -24,12 +24,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Comment> findAll(Long bookId) {
-        var book = bookRepository.
-                findById(bookId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Comments for book with id %d is not found".formatted(bookId)));
+        var book = bookRepository.findById(bookId).get();
         return commentRepository.findAll(book);
     }
 
