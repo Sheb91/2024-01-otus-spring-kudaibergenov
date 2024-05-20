@@ -6,14 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import ru.otus.hw.models.Author;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import(AuthorRepositoryImpl.class)
-public class AuthorRepositoryImplTest {
+public class AuthorRepositoryTest {
     private static final Long FIRST_AUTHOR_ID = 1L;
 
     private static final String NEW_AUTHOR_NAME = "NewUnitTestName";
@@ -23,14 +21,14 @@ public class AuthorRepositoryImplTest {
     private static final int EXPECTED_QUERIES_COUNT = 1;
 
     @Autowired
-    private AuthorRepositoryImpl authorRepositoryImpl;
+    private AuthorRepository authorRepository;
 
     @Autowired
     private TestEntityManager testEntityManager;
 
     @Test
     void shouldFindAuthorById() {
-        val optionalActualAuthor = authorRepositoryImpl.findById(FIRST_AUTHOR_ID);
+        val optionalActualAuthor = authorRepository.findById(FIRST_AUTHOR_ID);
         val optionalExpectedAuthor = testEntityManager.find(Author.class, FIRST_AUTHOR_ID);
         assertThat(optionalActualAuthor).isPresent().get()
                 .usingRecursiveComparison().isEqualTo(optionalExpectedAuthor);
@@ -40,7 +38,7 @@ public class AuthorRepositoryImplTest {
     void shouldSaveAuthor() {
         String authorName = "StephanTest";
         val author = new Author(null, authorName);
-        authorRepositoryImpl.save(author);
+        authorRepository.save(author);
         assertThat(author.getId()).isGreaterThan(0);
 
         val actualStudent = testEntityManager.find(Author.class, author.getId());
@@ -55,7 +53,7 @@ public class AuthorRepositoryImplTest {
         String authorOldName = firstAuthor.getName();
 
         firstAuthor.setName(NEW_AUTHOR_NAME);
-        authorRepositoryImpl.update(firstAuthor);
+        authorRepository.updateNameById(firstAuthor.getId(), firstAuthor.getName());
         val updatedAuthor = testEntityManager.find(Author.class, FIRST_AUTHOR_ID);
 
         assertThat(updatedAuthor.getName())
@@ -68,7 +66,7 @@ public class AuthorRepositoryImplTest {
         val firstAuthor = testEntityManager.find(Author.class, FIRST_AUTHOR_ID);
         assertThat(firstAuthor).isNotNull();
 
-        authorRepositoryImpl.delete(FIRST_AUTHOR_ID);
+        authorRepository.deleteById(FIRST_AUTHOR_ID);
         val deletedAuthor = testEntityManager.find(Author.class, FIRST_AUTHOR_ID);
         assertThat(deletedAuthor).isNull();
     }
@@ -79,7 +77,7 @@ public class AuthorRepositoryImplTest {
                 .unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
 
-        val authors = authorRepositoryImpl.findAll();
+        val authors = authorRepository.findAll();
         assertThat(authors)
                 .isNotNull()
                 .hasSize(EXPECTED_NUMBER_OF_AUTHORS)

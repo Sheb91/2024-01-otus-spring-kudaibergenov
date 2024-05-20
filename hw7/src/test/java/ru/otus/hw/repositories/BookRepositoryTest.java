@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import ru.otus.hw.models.Author;
 import ru.otus.hw.models.Book;
 import ru.otus.hw.models.Genre;
@@ -14,8 +13,7 @@ import ru.otus.hw.models.Genre;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import(BookRepositoryImpl.class)
-public class BookRepositoryImplTest {
+public class BookRepositoryTest {
 
     private static final Long FIRST_BOOK_ID = 1L;
 
@@ -25,14 +23,14 @@ public class BookRepositoryImplTest {
 
     private static final int EXPECTED_QUERIES_COUNT = 1;
     @Autowired
-    private BookRepositoryImpl bookRepositoryImpl;
+    private BookRepository bookRepository;
 
     @Autowired
     private TestEntityManager testEntityManager;
 
     @Test
     void shouldFindBookById() {
-        val optionalActualBook = bookRepositoryImpl.findById(FIRST_BOOK_ID);
+        val optionalActualBook = bookRepository.findById(FIRST_BOOK_ID);
         val optionalExpectedBook = testEntityManager.find(Book.class, FIRST_BOOK_ID);
         assertThat(optionalActualBook).isPresent().get()
                 .usingRecursiveComparison().isEqualTo(optionalExpectedBook);
@@ -43,7 +41,7 @@ public class BookRepositoryImplTest {
         val author = testEntityManager.find(Author.class, 1L);
         val genre = testEntityManager.find(Genre.class, 1L);
         val book = new Book(null, NEW_BOOK_NAME, author, genre);
-        bookRepositoryImpl.save(book);
+        bookRepository.save(book);
         assertThat(book.getId()).isGreaterThan(0);
 
         val actualBook = testEntityManager.find(Book.class, book.getId());
@@ -60,7 +58,7 @@ public class BookRepositoryImplTest {
         String bookOldName = firstBook.getName();
 
         firstBook.setName(NEW_BOOK_NAME);
-        bookRepositoryImpl.update(firstBook);
+        bookRepository.save(firstBook);
         val updatedBook = testEntityManager.find(Book.class, FIRST_BOOK_ID);
 
         assertThat(updatedBook.getName())
@@ -73,7 +71,7 @@ public class BookRepositoryImplTest {
         val firstBook = testEntityManager.find(Book.class, FIRST_BOOK_ID);
         assertThat(firstBook).isNotNull();
 
-        bookRepositoryImpl.delete(FIRST_BOOK_ID);
+        bookRepository.deleteById(FIRST_BOOK_ID);
         val deletedBook = testEntityManager.find(Book.class, FIRST_BOOK_ID);
         assertThat(deletedBook).isNull();
     }
@@ -84,7 +82,7 @@ public class BookRepositoryImplTest {
                 .unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
 
-        val books = bookRepositoryImpl.findAll();
+        val books = bookRepository.findAll();
         assertThat(books)
                 .isNotNull()
                 .hasSize(EXPECTED_NUMBER_OF_BOOKS)

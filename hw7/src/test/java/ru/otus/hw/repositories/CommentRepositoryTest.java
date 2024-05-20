@@ -6,15 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import ru.otus.hw.models.Book;
 import ru.otus.hw.models.Comment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import({CommentRepositoryImpl.class, BookRepositoryImpl.class})
-public class CommentRepositoryImplTest {
+public class CommentRepositoryTest {
     private static final Long FIRST_COMMENT_ID = 1L;
 
     private static final String NEW_COMMENT_DESCRIPTION = "CommentTestNew";
@@ -23,17 +21,17 @@ public class CommentRepositoryImplTest {
 
     private static final int EXPECTED_QUERIES_COUNT = 1;
     @Autowired
-    private CommentRepositoryImpl commentRepositoryImpl;
+    private CommentRepository commentRepository;
 
     @Autowired
-    private BookRepositoryImpl bookRepository;
+    private BookRepository bookRepository;
 
     @Autowired
     private TestEntityManager testEntityManager;
 
     @Test
     void shouldFindBookById() {
-        val optionalActualComment = commentRepositoryImpl.findById(FIRST_COMMENT_ID);
+        val optionalActualComment = commentRepository.findById(FIRST_COMMENT_ID);
         val optionalExpectedComment = testEntityManager.find(Comment.class, FIRST_COMMENT_ID);
         assertThat(optionalActualComment).isPresent().get()
                 .usingRecursiveComparison().isEqualTo(optionalExpectedComment);
@@ -43,7 +41,7 @@ public class CommentRepositoryImplTest {
     void shouldSaveComment() {
         val book = testEntityManager.find(Book.class, 1L);
         val comment = new Comment(null, book, NEW_COMMENT_DESCRIPTION);
-        commentRepositoryImpl.save(comment);
+        commentRepository.save(comment);
         assertThat(comment.getId()).isGreaterThan(0);
 
         val actualComment = testEntityManager.find(Comment.class, comment.getId());
@@ -59,7 +57,7 @@ public class CommentRepositoryImplTest {
         String commentOldDescription = firstComment.getDescription();
 
         firstComment.setDescription(NEW_COMMENT_DESCRIPTION);
-        commentRepositoryImpl.update(firstComment);
+        commentRepository.updateDescriptionById(firstComment.getId(), firstComment.getDescription());
         val updatedComment = testEntityManager.find(Comment.class, FIRST_COMMENT_ID);
 
         assertThat(updatedComment.getDescription())
@@ -72,7 +70,7 @@ public class CommentRepositoryImplTest {
         val firstComment = testEntityManager.find(Comment.class, FIRST_COMMENT_ID);
         assertThat(firstComment).isNotNull();
 
-        commentRepositoryImpl.delete(FIRST_COMMENT_ID);
+        commentRepository.deleteById(FIRST_COMMENT_ID);
         val deletedComment = testEntityManager.find(Comment.class, FIRST_COMMENT_ID);
         assertThat(deletedComment).isNull();
     }
@@ -85,7 +83,7 @@ public class CommentRepositoryImplTest {
                 .unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
 
-        val comments = commentRepositoryImpl.findAll(book);
+        val comments = commentRepository.findAllByBook(book);
         assertThat(comments)
                 .isNotNull()
                 .hasSize(EXPECTED_NUMBER_OF_COMMENTS_IN_BOOK)
