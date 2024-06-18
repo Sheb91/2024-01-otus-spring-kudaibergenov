@@ -45,18 +45,16 @@ public class BookServiceImpl implements BookService {
             throw new EntityNotFoundException("Cannot update book with id %d. Not found.".formatted(id));
         });
         book.setName(name);
-        if (authorId > 0) {
-            Author author = authorService.findById(authorId).orElseThrow(() -> {
-                throw new EntityNotFoundException("Cannot update book with authorId %d. Not found.".formatted(authorId));
-            });
-            book.setAuthor(author);
-        }
-        if (genreId > 0) {
-            Genre genre = genreService.findById(genreId).orElseThrow(() -> {
-                throw new EntityNotFoundException("Cannot update book with genreId %d. Not found.".formatted(genreId));
-            });
-            book.setGenre(genre);
-        }
+
+        Author author = authorService.findById(authorId).orElseThrow(() -> {
+            throw new EntityNotFoundException("Cannot update book with authorId %d. Not found.".formatted(authorId));
+        });
+        book.setAuthor(author);
+
+        Genre genre = genreService.findById(genreId).orElseThrow(() -> {
+            throw new EntityNotFoundException("Cannot update book with genreId %d. Not found.".formatted(genreId));
+        });
+        book.setGenre(genre);
 
         bookRepository.save(book);
     }

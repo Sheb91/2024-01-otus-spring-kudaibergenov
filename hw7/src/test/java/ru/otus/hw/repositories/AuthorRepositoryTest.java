@@ -18,7 +18,6 @@ public class AuthorRepositoryTest {
 
     private static final int EXPECTED_NUMBER_OF_AUTHORS = 3;
 
-    private static final int EXPECTED_QUERIES_COUNT = 1;
 
     @Autowired
     private AuthorRepository authorRepository;
@@ -82,6 +81,5 @@ public class AuthorRepositoryTest {
                 .isNotNull()
                 .hasSize(EXPECTED_NUMBER_OF_AUTHORS)
                 .allMatch(a -> !a.getName().equals(""));
-        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
     }
 }

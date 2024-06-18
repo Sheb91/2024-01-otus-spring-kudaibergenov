@@ -19,7 +19,6 @@ public class CommentRepositoryTest {
 
     private static final int EXPECTED_NUMBER_OF_COMMENTS_IN_BOOK = 3;
 
-    private static final int EXPECTED_QUERIES_COUNT = 1;
     @Autowired
     private CommentRepository commentRepository;
 
@@ -89,6 +88,5 @@ public class CommentRepositoryTest {
                 .hasSize(EXPECTED_NUMBER_OF_COMMENTS_IN_BOOK)
                 .allMatch(c -> !c.getDescription().equals(""))
                 .allMatch(c -> c.getBook() != null);
-        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
     }
 }

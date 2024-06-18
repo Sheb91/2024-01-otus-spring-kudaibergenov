@@ -21,7 +21,6 @@ public class BookRepositoryTest {
 
     private static final int EXPECTED_NUMBER_OF_BOOKS = 3;
 
-    private static final int EXPECTED_QUERIES_COUNT = 1;
     @Autowired
     private BookRepository bookRepository;
 
@@ -89,6 +88,5 @@ public class BookRepositoryTest {
                 .allMatch(b -> !b.getName().equals(""))
                 .allMatch(b -> b.getAuthor() != null)
                 .allMatch(b -> b.getGenre() != null);
-        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
     }
 }

@@ -43,7 +43,7 @@ public class CommentServiceImpl implements CommentService {
             throw new EntityNotFoundException("Cannot update comment with id %d. Not found.".formatted(id));
         });
         comment.setDescription(description);
-        commentRepository.updateDescriptionById(id, description);
+        commentRepository.save(comment);
     }
 
     @Override
